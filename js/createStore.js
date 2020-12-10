@@ -1,4 +1,23 @@
-let state;
+function createStore() {
+  let state;
+
+  //Redux works by having an action dispatched, which calls a reducer, and 
+  //then renders the view.
+  // state is now accessible to dispatch
+  function dispatch(action){
+    state = reducer(state, action);
+    render();
+  }
+
+
+  //This method simply returns the state so we can use it elsewhere in our 
+  //application. We will also need to add getState to the object our createStore function returns.
+  function getState() {
+    return state;
+  }
+
+  return { dispatch, getState };
+}
 
 function reducer(state = { count: 0 }, action) {
   switch (action.type) {
@@ -10,19 +29,18 @@ function reducer(state = { count: 0 }, action) {
   }
 };
 
-function dispatch(action){
-  state = reducer(state, action);
-  render();
-};
 
 function render() {
   let container = document.getElementById('container');
-  container.textContent = state.count;
+  container.textContent = store.getState.count;
 };
 
-dispatch({ type: '@@INIT' })
+//// createStore takes the reducer as an argument
+let store = createStore(reducer)
+
+store.dispatch({ type: '@@INIT' })
 let button = document.getElementById('button');
 
 button.addEventListener('click', function() {
-    dispatch({ type: 'INCREASE_COUNT' });
+    store.dispatch({ type: 'INCREASE_COUNT' });
 })
